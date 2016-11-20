@@ -5,15 +5,27 @@
 <body>
   <h1>Welcome to Wallet by Meteor!</h1>
 
+  {{> newSpending }}
   {{> spendingList}}
+  
 </body>
+
+<template name="newSpending">
+  <form class="add-spending">
+    <label>amount</label><input type="number" name="amount" />
+    <button type="submit">Add</button>
+  </form>
+</template>
 
 <template name="spendingList">
   <h2>Your spendings</h2>
   
+  <ul>
   {{#each spending}}
-      test
+    <li>
+      {{createdAt}} - {{amount}}
+    </li>
   {{/each}}
-
+  </ul>
 </template>
 
