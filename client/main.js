@@ -19,13 +19,16 @@ Template.body.events({
 
     const target = event.target;
     const amount = target.amount.value;
+    const desc = target.description.value;
 
     Spendings.insert({
       amount : amount,
-      createdAt: new Date() 
+      createdAt: new Date(),
+      description: desc
     });
 
     target.amount.value = '';
+    target.description.value = '';
 
   }
     

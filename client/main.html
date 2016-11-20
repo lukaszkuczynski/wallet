@@ -13,6 +13,7 @@
 <template name="newSpending">
   <form class="add-spending">
     <label>amount</label><input type="number" name="amount" />
+    <label>description</label><input type="text" name="description" />
     <button type="submit">Add</button>
   </form>
 </template>
@@ -25,7 +26,7 @@
   <ul>
   {{#each spending}}
     <li>
-      {{createdAt}} - {{amount}}
+      {{createdAt}}: {{description}}, PLN {{amount}}
     </li>
   {{/each}}
   </ul>
