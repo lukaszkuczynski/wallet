@@ -3,11 +3,11 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
 
-Spendings = new Mongo.Collection('spendings');
-Balances = new Mongo.Collection('balances');
+Operation = new Mongo.Collection('operation');
+Balance = new Mongo.Collection('balance');
 
 function lastBalance() {
-  var last = Balances.find({},{'sort' : {'createdAt':-1}},{'limit': 1}).fetch()
+  var last = Balance.find({},{'sort' : {'createdAt':-1}},{'limit': 1}).fetch()
   if (last.length === 0) return 0;
   return last[0]['balance'] 
 }
@@ -22,9 +22,9 @@ function processBalance(operationType, previousBalance, operation) {
   return previousBalance - diff;
 }
 
-Template.spendingList.helpers({
-  spending() {
-    return Spendings.find({},{'sort' : {'createdAt':-1}});
+Template.operationList.helpers({
+  operation() {
+    return Operation.find({},{'sort' : {'createdAt':-1}});
   }
 });
 
@@ -48,13 +48,13 @@ Template.body.events({
       createdAt: new Date(),
       description: desc
     };
-    Spendings.insert(operation);
+    Operation.insert(operation);
 
     const previousBalance = lastBalance();
     console.log('prev' + previousBalance);
     const newBalance = processBalance('spending', previousBalance, operation);
     console.log('new' + newBalance);
-    Balances.insert({
+    Balance.insert({
       operation: operation,
       createdAt: new Date(),
       balance: newBalance
@@ -78,13 +78,13 @@ Template.body.events({
       createdAt: new Date(),
       description: desc
     };
-    Spendings.insert(operation);
+    Operation.insert(operation);
 
     const previousBalance = lastBalance();
     console.log('prev' + previousBalance);
     const newBalance = processBalance('income', previousBalance, operation);
     console.log('new' + newBalance);
-    Balances.insert({
+    Balance.insert({
       operation: operation,
       createdAt: new Date(),
       balance: newBalance
