@@ -12,6 +12,15 @@ function lastBalance() {
   return last[0]['balance'] 
 }
 
+function processBalance(operationType, previousBalance, operation) {
+  var diff = 0
+  if (operationType === 'spending') {
+    diff = operation['amount'];
+  } else if (operationType === 'income') {
+    diff = -1 * operation['amount'];
+  } else throw "unknown operationType " + operationType
+  return previousBalance - diff;
+}
 
 Template.spendingList.helpers({
   spending() {
@@ -33,15 +42,6 @@ Template.body.events({
     const amount = target.amount.value;
     const desc = target.description.value;
 
-    function processBalance(operationType, previousBalance, operation) {
-      var diff = 0
-      if (operationType === 'spending') {
-        diff = operation['amount'];
-      } else throw "unknown operationType " + operationType
-      return previousBalance - diff;
-    }
-
-
     const operation = 
     {
       amount : amount,
@@ -53,6 +53,36 @@ Template.body.events({
     const previousBalance = lastBalance();
     console.log('prev' + previousBalance);
     const newBalance = processBalance('spending', previousBalance, operation);
+    console.log('new' + newBalance);
+    Balances.insert({
+      operation: operation,
+      createdAt: new Date(),
+      balance: newBalance
+    });
+
+    target.amount.value = '';
+    target.description.value = '';
+
+  },
+
+  'submit .add-income'(event) {
+    event.preventDefault();
+
+    const target = event.target;
+    const amount = target.amount.value;
+    const desc = target.description.value;
+
+    const operation = 
+    {
+      amount : amount,
+      createdAt: new Date(),
+      description: desc
+    };
+    Spendings.insert(operation);
+
+    const previousBalance = lastBalance();
+    console.log('prev' + previousBalance);
+    const newBalance = processBalance('income', previousBalance, operation);
     console.log('new' + newBalance);
     Balances.insert({
       operation: operation,
